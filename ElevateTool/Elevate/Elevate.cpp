@@ -1,6 +1,5 @@
 #include "stdafx.h"
 
-
 struct elevateArgs
 {
 	wchar_t* pFile;
