@@ -4,7 +4,7 @@ struct elevateArgs
 {
 	wchar_t* pFile;
 	wchar_t* pParameters;
-
+	bool pauseBeforeExit;
 };
 
 void printHelp()
@@ -15,6 +15,7 @@ void printHelp()
 elevateArgs* parseCommandLine(int argc, wchar_t** argv)
 {
 	elevateArgs* pArgs = new elevateArgs();
+	pArgs->pauseBeforeExit = false;
 	pArgs->pFile = argc > 0 ? argv[0] : nullptr;
 	if (argc <= 1)
 		pArgs->pParameters = nullptr;
@@ -45,6 +46,25 @@ elevateArgs* parseCommandLine(int argc, wchar_t** argv)
 	return pArgs;
 }
 
+LPCWSTR getCmdPath()
+{
+	LPWSTR lpComSpec = new wchar_t[MAX_PATH];
+	ExpandEnvironmentStringsW(L"%ComSpec%", lpComSpec, MAX_PATH);
+	return static_cast<LPCWSTR>(lpComSpec);
+}
+
+LPCWSTR getCmdParameters(LPCWSTR lpFile, LPCWSTR lpParameters)
+{
+	int newLen = lstrlenW(lpFile) + lstrlenW(lpParameters) + 30;
+	LPWSTR lpCmdParameters = new wchar_t[newLen];
+	StringCchCopyW(lpCmdParameters, newLen, L"/c \"\"");
+	StringCchCatW(lpCmdParameters, newLen, lpFile);
+	StringCchCatW(lpCmdParameters, newLen, L"\" ");
+	StringCchCatW(lpCmdParameters, newLen, lpParameters);
+	StringCchCatW(lpCmdParameters, newLen, L"\" & pause");
+	return static_cast<LPCWSTR>(lpCmdParameters);
+}
+
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nCmdShow)
 {
 	int argc;
@@ -68,8 +88,16 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLin
 	{
 		sei.lpVerb = L"runas";
 	}
-	sei.lpFile = args->pFile;
-	sei.lpParameters = args->pParameters;
+	if (args->pauseBeforeExit)
+	{
+		sei.lpFile = getCmdPath();
+		sei.lpParameters = getCmdParameters(args->pFile, args->pParameters);
+	}
+	else
+	{
+		sei.lpFile = args->pFile;
+		sei.lpParameters = args->pParameters;
+	}
 	sei.nShow = SW_SHOWNORMAL;
 	if (TRUE == ShellExecuteExW(&sei))
 	{
