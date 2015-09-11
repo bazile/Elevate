@@ -6,6 +6,7 @@
 #include "targetver.h"
 
 #include <windows.h>
+#include <objbase.h>
 #include <shellapi.h>
 #include <strsafe.h>
 #include <VersionHelpers.h>

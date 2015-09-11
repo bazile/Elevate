@@ -62,6 +62,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLin
 	}
 	elevateArgs* args = parseCommandLine(argc, argv);
 
+	CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+
 	//AttachConsole(ATTACH_PARENT_PROCESS);
 
 	SHELLEXECUTEINFOW sei;
