@@ -28,21 +28,15 @@ elevateArgs* parseCommandLine(int argc, wchar_t** argv)
 			len += lstrlenW(argv[i]);
 		}
 		int spaceCount = argc - 2;
-		int remainingSize = len + 1 + spaceCount;
-		wchar_t* pParameters = new wchar_t[remainingSize];
-		wchar_t* pTemp = pParameters;
-		for (int i = 1, pos = 0; i < argc; i++)
+		len += spaceCount + 1;
+		wchar_t* pParameters = new wchar_t[len];
+		ZeroMemory(pParameters, len*sizeof(wchar_t));
+		for (int i = 1; i < argc; i++)
 		{
-			int curLen = lstrlenW(argv[i]);
-			StringCchCopyW(pTemp, remainingSize, argv[i]);
-			remainingSize -= curLen;
-			pTemp += curLen;
-
+			StringCchCatW(pParameters, len, argv[i]);
 			if (spaceCount > 0)
 			{
-				StringCchCopyW(pTemp, remainingSize, L" ");
-				remainingSize -= 1;
-				pTemp += 1;
+				StringCchCatW(pParameters, len, L" ");
 				spaceCount--;
 			}
 		}
