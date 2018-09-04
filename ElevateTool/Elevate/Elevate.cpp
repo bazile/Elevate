@@ -55,7 +55,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLin
 {
 	int argc;
 	LPWSTR* argv = CommandLineToArgvW(lpCmdLine, &argc);
-	if (argc == 0)
+	if (argc == 0 || wcslen(lpCmdLine) == 0)
 	{
 		printHelp();
 		return 0;
