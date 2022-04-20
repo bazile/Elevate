@@ -4,7 +4,7 @@ Command line tool to run application elevated.
 
 Compiled for x86 and x64 systems.
 
-## Example ##
+## Examples ##
 
 `elevate cmd /k date /t`
 
